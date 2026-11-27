@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Privacy Policy - Graceful Diary</title>
     <meta name="description"
-        content="Privacy Policy for Graceful Diary. Learn how your data is protected, stored locally, and securely synced to your personal Google Drive.">
+        content="Privacy Policy for Graceful Diary. Learn what data is processed locally, how optional Google Drive AppData sync works, and how your privacy is protected.">
     <link rel="stylesheet" href="styles.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -31,169 +31,286 @@
     <main class="legal-page">
         <div class="container legal-container">
             <h1>Privacy Policy</h1>
-            <p class="last-updated">Last Updated: November 23, 2026</p>
+            <p class="last-updated">Last Updated: November 27, 2026</p>
 
             <section>
                 <h2>1. Introduction</h2>
                 <p>
-                    <strong>Graceful Diary</strong> ("we", "our", or "the App") is an open-source gratitude journal
-                    application designed with privacy, simplicity, and user control as foundational principles. We
-                    believe that your personal thoughts, memories, and reflections belong solely to you.
+                    <strong>Graceful Diary</strong> (Android package <code>thank.you.God.Elohim</code>, referred to as
+                    "we", "our", or "the App") is an offline-first gratitude journal application designed around local
+                    storage and user control. We do not operate developer-owned backend servers, user accounts, or
+                    central databases to store your journal content.
                 </p>
                 <p>
-                    This Privacy Policy explains what information the App interacts with, how it is handled, and your
-                    rights and controls over your data.
+                    This Privacy Policy describes what information Graceful Diary accesses, processes locally on your
+                    device, transmits to third-party services, collects for diagnostics, and shares—based on the
+                    actual implementation of the App.
                 </p>
             </section>
 
             <section>
-                <h2>2. Information We Access and How It Is Used</h2>
+                <h2>2. Summary of Data Handling</h2>
+                <div class="table-wrapper">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Data Category</th>
+                                <th>Accessed / Processed Locally</th>
+                                <th>Transmitted / Collected</th>
+                                <th>Shared With Third Parties</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Journal Entries, Time Capsules &amp; Sanctuary Progress</strong></td>
+                                <td>Yes — stored locally in Room SQLite database (<code>Entry_database</code>)</td>
+                                <td>Only if you enable Google Drive Sync (stored in your personal Drive <code>appDataFolder</code>) or Android Auto Backup</td>
+                                <td>No (not sold, shared, or accessible to the developer)</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Photo Memories</strong></td>
+                                <td>Yes — selected via Android Photo Picker; resized/compressed to WebP in app-private storage (EXIF stripped)</td>
+                                <td>Only if you enable Google Drive Sync (uploaded to your personal Drive <code>appDataFolder</code>)</td>
+                                <td>No</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Optional Display / Diary Name &amp; App Preferences</strong></td>
+                                <td>Yes — stored locally in Android <code>SharedPreferences</code></td>
+                                <td>Only included in your personal Google Drive Sync payload when sync is enabled</td>
+                                <td>No</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Google Account Email &amp; Auth Token</strong></td>
+                                <td>Yes — only if you sign in for Google Drive Sync</td>
+                                <td>Transmitted to Google Play Services / Google OAuth for authentication</td>
+                                <td>Only Google (for authentication &amp; Drive API access)</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Biometric Authentication</strong></td>
+                                <td>Processed by Android OS <code>BiometricPrompt</code> hardware/keystore</td>
+                                <td>Never transmitted or stored by the App</td>
+                                <td>No</td>
+                            </tr>
+                            <tr>
+                                <td><strong>App Diagnostics &amp; Usage Events</strong></td>
+                                <td>Generated by Firebase Analytics &amp; Crashlytics (enabled by default; opt-out in Settings)</td>
+                                <td>Transmitted to Google Firebase (app events, screen views, crash stack traces, device/OS info; Ad ID collection disabled)</td>
+                                <td>Processed by Google Firebase on our behalf</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
 
-                <h3>A. Journal Entries and Local Content</h3>
-                <p>
-                    All journal entries, milestone achievements, dates, and reflection notes created in Graceful Diary
-                    are stored <strong>locally on your device</strong> in an offline SQLite database. We do not operate
-                    external application servers, central databases, or cloud accounts that receive or read your
-                    entries.
-                </p>
+            <section>
+                <h2>3. Data Processed Locally on Your Device</h2>
+                <ul>
+                    <li>
+                        <strong>Journal Content &amp; Features:</strong> Daily gratitude entries, full-text search
+                        indexes (FTS4), Time Capsules (titles, prompts, letters, replies, unlock dates, recipient
+                        labels), and Garden/Sanctuary milestones are stored in a local SQLite database
+                        (<code>Entry_database</code>) inside the App's private sandbox.
+                    </li>
+                    <li>
+                        <strong>Photo Memories &amp; Permissions:</strong> When you attach photos to a journal entry or
+                        Time Capsule (up to 3 photos per item), Graceful Diary uses the native Android
+                        <strong>Photo Picker</strong> (<code>PickVisualMedia</code>). The App does <strong>not</strong>
+                        request broad storage permissions (such as <code>READ_EXTERNAL_STORAGE</code> or
+                        <code>READ_MEDIA_IMAGES</code>). Selected images are decoded, scaled (up to 1600px), and
+                        re-encoded as WebP files inside app-private storage (<code>files/memories/</code>), which
+                        removes original camera EXIF metadata (such as GPS coordinates).
+                    </li>
+                    <li>
+                        <strong>Optional Profile Name &amp; Settings:</strong> If you enter a display/diary name, or
+                        configure themes, fonts, reminder schedules, language, or app-lock preferences, those values are
+                        stored locally in Android <code>SharedPreferences</code>.
+                    </li>
+                    <li>
+                        <strong>Biometric App Lock:</strong> Optional biometric locking for the App or Time Capsules
+                        uses Android's native <code>BiometricPrompt</code> API. The App only receives a success or
+                        failure callback and never accesses, stores, or transmits biometric data.
+                    </li>
+                    <li>
+                        <strong>Local Exports &amp; Share Cards:</strong> You can export entries to CSV, JSON, or PDF
+                        (including embedded photo thumbnails) to a location you choose via Android's Storage Access
+                        Framework. When you share a quote card, a temporary PNG is written to the App's cache directory
+                        and shared via <code>SharingFileProvider</code> solely with the target app you select.
+                    </li>
+                    <li>
+                        <strong>Device Alarms &amp; Notifications:</strong> Daily reminders and weekly digests are
+                        scheduled locally using Android <code>AlarmManager</code> and broadcast receivers
+                        (<code>RECEIVE_BOOT_COMPLETED</code>, <code>SCHEDULE_EXACT_ALARM</code>,
+                        <code>POST_NOTIFICATIONS</code>, <code>VIBRATE</code>). Notification content is generated on
+                        your device.
+                    </li>
+                </ul>
+            </section>
 
-                <h3>B. Google Account & Google Drive Access (Optional Feature)</h3>
+            <section>
+                <h2>4. Google Sign-In &amp; Google Drive Sync (Optional)</h2>
                 <p>
-                    If you voluntarily choose to enable the <strong>Google Sign-In and Google Drive Sync</strong>
-                    feature, the App interacts with your Google Account as follows:
+                    Cloud backup and sync are completely optional. If you choose to connect your Google Account in
+                    Settings, the App uses Google Sign-In and the Google Drive REST API v3 as follows:
                 </p>
                 <ul>
                     <li>
-                        <strong>Google Account Authentication:</strong> We request basic account identity (such as your
-                        email address and profile identifier) solely to authenticate your session and display your
-                        connected account status within the App's settings.
+                        <strong>Authentication &amp; Identity:</strong> The App requests your basic Google Account
+                        email address (<code>requestEmail()</code>) to authenticate your session and display the
+                        connected account in Settings.
                     </li>
                     <li>
-                        <strong>Google Drive Application Data Scope
-                            (<code>https://www.googleapis.com/auth/drive.appdata</code>):</strong> We request access to
-                        Google Drive's dedicated, hidden <em>Application Data Folder</em> (AppData). This scope is used
-                        exclusively to:
-                        <ul>
-                            <li>Upload your encrypted/structured backup file containing your journal entries and app
-                                preferences to your personal Google Drive storage.</li>
-                            <li>Download and restore your backup file to your device when you request a restore or set
-                                up a new device.</li>
-                        </ul>
+                        <strong>Restricted Scope (<code>https://www.googleapis.com/auth/drive.appdata</code>):</strong>
+                        The App requests access <strong>only</strong> to Google Drive's hidden, app-specific
+                        <em>Application Data Folder</em> (<code>appDataFolder</code>). The App cannot view, read,
+                        modify, or delete your personal Drive files, documents, or Google Photos outside this hidden
+                        folder.
                     </li>
                     <li>
-                        <strong>No Broad Drive Access:</strong> The App does <strong>not</strong> have access to your
-                        personal files, documents, photos, or any other content stored outside the dedicated Graceful
-                        Diary AppData folder in your Google Drive.
+                        <strong>What Is Backed Up:</strong> When sync runs (manually, on change, or periodically via
+                        Android WorkManager), the App uploads a structured JSON file
+                        (<code>graceful_diary_sync.json</code>) containing your journal entries, Time Capsules, photo
+                        metadata, deletion tombstones, Sanctuary/Garden state, optional display name, and app settings,
+                        along with your compressed WebP photo memory files (<code>image/webp</code>), directly to your
+                        personal <code>appDataFolder</code>.
+                    </li>
+                    <li>
+                        <strong>Transport &amp; Storage Custody:</strong> All communication with Google Drive occurs
+                        over HTTPS/TLS directly between your device and Google's servers. The developer has no access to
+                        your Google Drive files. Note that the JSON and WebP backup files are stored in your private
+                        <code>appDataFolder</code> in structured form and are not separately end-to-end encrypted by
+                        the App prior to upload.
                     </li>
                 </ul>
-
-                <h3>C. Application Preferences & Settings</h3>
-                <p>
-                    Your selected visual theme, notification reminder times, quote display preferences, first day of the
-                    week, and display options are stored locally on your device via Android SharedPreferences and backed
-                    up alongside your journal entries when cloud sync is enabled.
-                </p>
-
-                <h3>D. Crash Reporting & Anonymous Telemetry</h3>
-                <p>
-                    To ensure app stability and fix crashes, the App may utilize Firebase Crashlytics and Google
-                    Analytics for Firebase to receive anonymous diagnostics (e.g., device model, OS version, and crash
-                    stack traces). No personal journal content is ever included in crash logs. You can opt out of
-                    analytics anytime directly in the App's Settings.
-                </p>
             </section>
 
             <section class="policy-highlight">
-                <h2>3. Google API Services User Data Policy Compliance</h2>
+                <h2>5. Google API Services User Data Policy (Limited Use)</h2>
                 <p>
                     <strong>Graceful Diary's use and transfer to any other app of information received from Google APIs
                         will adhere to the <a href="https://developers.google.com/terms/api-services-user-data-policy"
                             target="_blank" rel="noopener noreferrer">Google API Services User Data Policy</a>,
                         including the Limited Use requirements.</strong>
                 </p>
-                <p>Specifically:</p>
                 <ul>
-                    <li>We only use Google user data to provide user-facing features (backup and restore of journal
-                        entries and settings).</li>
-                    <li>We do <strong>never</strong> transfer, sell, or disclose Google user data to third parties,
-                        advertising platforms, data brokers, or information resellers.</li>
-                    <li>We do <strong>never</strong> use Google user data for serving advertisements, retargeting, or
-                        promotional marketing.</li>
-                    <li>We do <strong>never</strong> use Google user data to train, fine-tune, or develop generalized
+                    <li>Google user data is used solely to provide user-facing backup, synchronization, and restoration
+                        of your journal data within your own Google Drive <code>appDataFolder</code>.</li>
+                    <li>We do <strong>not</strong> transfer, sell, or disclose Google user data to third parties, data
+                        brokers, or advertising networks.</li>
+                    <li>We do <strong>not</strong> use Google user data for serving advertisements, retargeting, or
+                        marketing.</li>
+                    <li>We do <strong>not</strong> use Google user data to train, fine-tune, or improve generalized
                         artificial intelligence (AI) or machine learning (ML) models.</li>
-                    <li>Humans do not read your data unless you provide explicit consent to investigate a specific
-                        technical support issue, or as required by applicable law.</li>
+                    <li>Humans do not read your Google Drive backup data; it resides solely in your personal Google
+                        account.</li>
                 </ul>
             </section>
 
             <section>
-                <h2>4. Data Storage, Custody, and Security</h2>
-                <p>
-                    <strong>You own your data:</strong> Graceful Diary does not transmit your personal journal content
-                    to developer-controlled servers. Your backups reside directly within your personal Google Drive
-                    account under your own Google credentials.
-                </p>
-                <p>
-                    Data transmission between your device and Google's servers is encrypted in transit using
-                    industry-standard TLS/HTTPS protocols. Biometric app locking (fingerprint/face recognition) uses
-                    Android's native BiometricPrompt API, ensuring biometric credentials never leave your device
-                    hardware security module.
-                </p>
-            </section>
-
-            <section>
-                <h2>5. User Control, Data Deletion, and Revocation</h2>
-                <p>You have complete control over your data at all times:</p>
+                <h2>6. Analytics, Crash Reporting &amp; Other Network Requests</h2>
                 <ul>
                     <li>
-                        <strong>In-App Deletion:</strong> You can edit or delete individual entries or clear all data
-                        locally from the App at any time.
+                        <strong>Firebase Analytics &amp; Firebase Crashlytics:</strong> To understand app stability and
+                        feature usage, Graceful Diary integrates Google Firebase Analytics and Firebase Crashlytics.
+                        <ul>
+                            <li><strong>What is collected:</strong> Screen views, non-content interaction events (e.g.,
+                                opening settings, creating an entry, milestone level-ups, biometric prompt outcomes),
+                                app instance identifiers, crash stack traces, and non-fatal exception logs (including
+                                handled Drive sync exceptions). <strong>No journal entry text, Time Capsule content,
+                                    or photo memories are intentionally logged to Analytics or Crashlytics.</strong></li>
+                            <li><strong>Advertising ID Disabled:</strong> The App explicitly disables Google Analytics
+                                Advertising ID collection in its manifest
+                                (<code>google_analytics_adid_collection_enabled = false</code>) and displays no ads.</li>
+                            <li><strong>Opt-Out Control:</strong> Analytics and Crashlytics are enabled by default, and
+                                you can opt out at any time in <strong>Settings</strong>. Opting out disables both
+                                Firebase Analytics and Crashlytics collection and calls
+                                <code>resetAnalyticsData()</code> to clear the local app instance ID.</li>
+                        </ul>
                     </li>
                     <li>
-                        <strong>Disconnect Google Account:</strong> You can disconnect your Google account at any moment
-                        through the App's Settings.
+                        <strong>Android Auto Backup:</strong> The App permits standard Android OS backup
+                        (<code>android:allowBackup="true"</code>), excluding the local sync receipt file
+                        (<code>google_sync_device_receipt.xml</code>). If you enable device backup in your Android
+                        system settings, Android may back up your local app database and preferences to your Google
+                        account according to Google's Android Backup Service terms.
                     </li>
                     <li>
-                        <strong>Delete Cloud Backups:</strong> You can delete all synced data from your Google Drive by
-                        visiting <a href="https://drive.google.com" target="_blank" rel="noopener">Google Drive on the
-                            web</a> &rarr; <em>Settings (gear icon)</em> &rarr; <em>Manage Apps</em> &rarr; find
-                        <em>Graceful Diary</em> &rarr; select <em>Options</em> &rarr; <em>Delete hidden app data</em>.
+                        <strong>Google Play In-App Updates:</strong> The App uses the Google Play App Update library to
+                        check for and prompt you to install newer versions from Google Play.
                     </li>
                     <li>
-                        <strong>Revoke App Permissions:</strong> You can revoke the App's access to your Google Account
-                        at any time via your <a href="https://myaccount.google.com/permissions" target="_blank"
-                            rel="noopener">Google Account Permissions page</a>.
+                        <strong>Optional Support &amp; Feedback Emails:</strong> If you choose to send private feedback
+                        from the in-app review prompt, the App opens your email client (<code>mailto:</code>) with a
+                        draft addressed to <code>liebemutter07@gmail.com</code> containing your rating, message, app
+                        version, device model, and Android OS version. Nothing is sent unless you press send in your
+                        email app.
                     </li>
                 </ul>
             </section>
 
             <section>
-                <h2>6. Children's Privacy</h2>
+                <h2>7. Data Retention, Deletion &amp; Your Controls</h2>
+                <p>You control your data across both your device and your Google Drive:</p>
+                <ul>
+                    <li>
+                        <strong>Delete Individual or Selected Entries &amp; Photos:</strong> Use the in-app
+                        <strong>Manage entries &amp; photos</strong> screen (or entry editor) to delete specific entries
+                        or photos. Local files and database rows are deleted immediately; if Google Drive Sync is
+                        connected, matching Drive photo files are deleted and deletion tombstones are synced to
+                        <code>graceful_diary_sync.json</code> (or queued until you are next online).
+                    </li>
+                    <li>
+                        <strong>Disconnect Google Account:</strong> You can sign out of Google Drive Sync at any time in
+                        <strong>Settings</strong>. This stops background WorkManager sync jobs and clears your local
+                        Google account preference.
+                    </li>
+                    <li>
+                        <strong>Delete All Cloud Backups:</strong> To permanently remove the hidden
+                        <code>appDataFolder</code> backup from your Google Drive, go to
+                        <a href="https://drive.google.com" target="_blank" rel="noopener noreferrer">Google Drive on the
+                            web</a> &rarr; <em>Settings (gear icon)</em> &rarr; <em>Manage apps</em> &rarr;
+                        <em>Graceful Diary</em> &rarr; <em>Options</em> &rarr; <em>Delete hidden app data</em>.
+                    </li>
+                    <li>
+                        <strong>Revoke Google Account Permissions:</strong> You can revoke Graceful Diary's OAuth
+                        access at any time from your
+                        <a href="https://myaccount.google.com/permissions" target="_blank"
+                            rel="noopener noreferrer">Google Account Permissions</a> page.
+                    </li>
+                    <li>
+                        <strong>Remove All Local Data:</strong> Uninstalling Graceful Diary or clearing App Storage in
+                        Android System Settings permanently deletes the local Room database, photo memories, and
+                        preferences from your device.
+                    </li>
+                </ul>
+            </section>
+
+            <section>
+                <h2>8. Children's Privacy</h2>
                 <p>
-                    Graceful Diary does not knowingly collect, solicit, or maintain personal identifiable information
-                    from children under the age of 13. Because the App operates offline-first and does not collect user
-                    identities on central servers, no child data is gathered.
+                    Graceful Diary is not directed to children under the age of 13 (or the applicable age of digital
+                    consent in your jurisdiction), and we do not knowingly collect personal information from children.
+                    If you believe a child has provided personal information through the App or via support email,
+                    please contact us so we can address it promptly.
                 </p>
             </section>
 
             <section>
-                <h2>7. Changes to This Privacy Policy</h2>
+                <h2>9. Changes to This Privacy Policy</h2>
                 <p>
-                    We may update this Privacy Policy from time to time. Any changes will be posted on this page with an
-                    updated "Last Updated" date. We encourage you to review this page periodically.
+                    We may update this Privacy Policy to reflect changes in the App or legal requirements. Updates will
+                    be posted on this page with a revised "Last Updated" date.
                 </p>
             </section>
 
             <section>
-                <h2>8. Contact Us</h2>
+                <h2>10. Contact Us</h2>
                 <p>
-                    If you have questions, concerns, or feedback regarding this Privacy Policy or the privacy practices
-                    of Graceful Diary, please contact us:
+                    If you have questions about this Privacy Policy, your data, or deletion requests, please contact us:
                 </p>
                 <div class="contact-box">
                     <p><strong>Developer:</strong> Graceful Diary Team</p>
                     <p><strong>Email:</strong> <a href="mailto:liebemutter07@gmail.com">liebemutter07@gmail.com</a></p>
-                    <p><strong>Application:</strong> Graceful Diary (Package: <code>thank.you.God.Elohim</code>)</p>
+                    <p><strong>Application:</strong> Graceful Diary (<code>thank.you.God.Elohim</code>)</p>
                 </div>
             </section>
         </div>
@@ -203,7 +320,7 @@
         <div class="container footer-container">
             <div class="footer-left">
                 <strong>Graceful Diary</strong>
-                <p>Private, mindful, Free gratitude journaling.</p>
+                <p>Private, mindful, free gratitude journaling.</p>
             </div>
             <div class="footer-right">
                 <a href="index.html">Home</a>
